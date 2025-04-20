@@ -1,0 +1,7 @@
+name: "my-website"
+navbar:
+  title: "13C Metablic Flux Analysis"
+  left:
+    - text: "R script"
+      href: index.html
+output_dir: "."

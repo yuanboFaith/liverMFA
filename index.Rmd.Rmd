@@ -1,0 +1,36 @@
+---
+title: "Whole-body multi-organ modeling"
+output: html_document
+---
+
+```{r, message=F, warning=FALSE, echo=FALSE}
+rm(list = ls())
+library(plotly)
+library(tidyverse)
+
+rstudioapi::getActiveDocumentContext()$path %>% dirname() %>% setwd()
+load("/Users/boyuan/Desktop/Harvard/Manuscript/2. liver MFA/3DPCA.RData")
+
+plot_ly(d.PC, 
+        x = ~PC1, 
+        y = ~PC2, 
+        z = ~PC3, 
+        color = ~tissue, 
+        type = "scatter3d",
+        mode = "markers",
+        colors = colors.tissues, size = 1
+) %>%
+  # add_markers() %>%
+  layout(title = '\nTissue 13C labeling profile 3D\ninteractive principal component analysis',
+         scene = list(
+           xaxis = list(title = paste0("PC1 (", round(d.cree$percent[1]), "%)"),
+                        range = c(-6, 5)),
+           yaxis = list(title = paste0("PC2 (", round(d.cree$percent[2]), "%)"),
+                        range = c(-5, 5)),
+           zaxis = list(title = paste0("PC3 (", round(d.cree$percent[3]), "%)"),
+                        range = c(-4, 4))
+         )
+  )
+
+```
+
