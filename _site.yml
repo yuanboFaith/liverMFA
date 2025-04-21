@@ -2,6 +2,6 @@ name: "my-website"
 navbar:
   title: "13C Metablic Flux Analysis"
   left:
-    - text: "R script"
+    - text: "Tissue 13C labeling profile 3D\ninteractive principal component analysis"
       href: index.html
 output_dir: "."

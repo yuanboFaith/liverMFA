@@ -1,9 +1,10 @@
 ---
-title: "Whole-body multi-organ modeling"
+title: ""
 output: html_document
 ---
 
-```{r, message=F, warning=FALSE, echo=FALSE}
+
+```{r, message=F, warning=FALSE, echo=FALSE, fig.align='left'}
 rm(list = ls())
 library(plotly)
 library(tidyverse)
@@ -11,26 +12,52 @@ library(tidyverse)
 rstudioapi::getActiveDocumentContext()$path %>% dirname() %>% setwd()
 load("/Users/boyuan/Desktop/Harvard/Manuscript/2. liver MFA/3DPCA.RData")
 
-plot_ly(d.PC, 
-        x = ~PC1, 
-        y = ~PC2, 
-        z = ~PC3, 
-        color = ~tissue, 
-        type = "scatter3d",
-        mode = "markers",
-        colors = colors.tissues, size = 1
-) %>%
-  # add_markers() %>%
-  layout(title = '\nTissue 13C labeling profile 3D\ninteractive principal component analysis',
-         scene = list(
-           xaxis = list(title = paste0("PC1 (", round(d.cree$percent[1]), "%)"),
-                        range = c(-6, 5)),
-           yaxis = list(title = paste0("PC2 (", round(d.cree$percent[2]), "%)"),
-                        range = c(-5, 5)),
-           zaxis = list(title = paste0("PC3 (", round(d.cree$percent[3]), "%)"),
-                        range = c(-4, 4))
-         )
+d.PC <- d.PC %>% mutate(across(PC1:PC15, function(x)round(x, 2)))
+
+
+# hover text
+d.PC$hover_text <- paste0(
+  "<b>", d.PC$tissue, "</b><br>",
+  "PC1: ", d.PC$PC1, "<br>",
+  "PC2: ", d.PC$PC2, "<br>",
+  "PC3: ", d.PC$PC3
+)
+
+# main plot
+p <- plot_ly(data = d.PC,
+             x = ~PC1, y = ~PC2, z = ~PC3,
+             color = ~tissue,
+             type = "scatter3d", mode = "markers",
+             colors = colors.tissues,
+             size = 3,
+             text = ~hover_text, hoverinfo = "text") %>% 
+  layout(showlegend = FALSE)
+
+
+# adjust the axis 
+p <- p %>% layout( 
+  # title = '\n\nTissue 13C labeling profile 3D\ninteractive principal component analysis',
+  scene = list(
+    xaxis = list(title = paste0("PC1 (", round(d.cree$percent[1]), "%)"), range = c(-7, 6)),
+    yaxis = list(title = paste0("PC2 (", round(d.cree$percent[2]), "%)"), range = c(-6, 6)),
+    zaxis = list(title = paste0("PC3 (", round(d.cree$percent[3]), "%)"), range = c(-5, 5))
   )
+)
+
+# add plot border
+p <- layout(
+  p,
+  shapes = list(
+    list(
+      type = "rect", xref = "paper", yref = "paper",
+      x0 = 0, x1 = 1, y0 = 0, y1 = 1,
+      line = list(color = "grey80", width = .1, type = "dashed"),
+      layer = "below"  # So it doesn't cover data points
+    )
+  )
+)
+
+p
 
 ```
 
