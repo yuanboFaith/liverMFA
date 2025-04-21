@@ -29,7 +29,7 @@ p <- plot_ly(data = d.PC,
              color = ~tissue,
              type = "scatter3d", mode = "markers",
              colors = colors.tissues,
-             size = 3,
+             size = 3, opacity = 0.5, 
              text = ~hover_text, hoverinfo = "text") %>% 
   layout(showlegend = FALSE)
 
@@ -38,7 +38,7 @@ p <- plot_ly(data = d.PC,
 p <- p %>% layout( 
   # title = '\n\nTissue 13C labeling profile 3D\ninteractive principal component analysis',
   scene = list(
-    xaxis = list(title = paste0("PC1 (", round(d.cree$percent[1]), "%)"), range = c(-7, 6)),
+    xaxis = list(title = paste0("PC1 (", round(d.cree$percent[1]), "%)"), range = c(-5, 7)),
     yaxis = list(title = paste0("PC2 (", round(d.cree$percent[2]), "%)"), range = c(-6, 6)),
     zaxis = list(title = paste0("PC3 (", round(d.cree$percent[3]), "%)"), range = c(-5, 5))
   )
@@ -57,7 +57,36 @@ p <- layout(
   )
 )
 
+# search the HTML console to extract parameters: document.querySelector(".js-plotly-plot").layout.scene.camera
+
+# adjust camera angle
+camera <- list(
+  center = list(
+    x = -0.02755544095467381,
+    y = -0.015567848573545304,
+    z = -0.33073046296070996
+  ),
+  eye = list(
+    x = -1.353756002837781,
+    y = 0.8512223475357555,
+    z = 0.6221599082802555
+  ),
+  up = list(
+    x = 0.0013018987205957934,
+    y = 0.00017885743933839047,
+    z = 0.999999136534496
+  ),
+  projection = list(
+    type = "perspective"
+  )
+)
+
+p <- p %>% layout(scene = list(camera = camera))
+
+
 p
 
+# py_install("plotly", method = "pip") # install python plotly
+plotly::save_image(p, "3d_plot.pdf", width = 600, height = 400, scale = 4)
 ```
 
